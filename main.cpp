@@ -30,12 +30,19 @@ void die(std::string s)
 
 int main(void)
 {
+	int tik = 0;
+
 	struct sockaddr_in si_me, si_other;
 	
 	socklen_t slen = sizeof(si_other);
 	
 	int s, i, recv_len;
+
 	char buf[BUFLEN];
+	for(int i = 0; i<BUFLEN;++i)
+	{
+		buf[i]=' ';
+	}
 	
 	//create a UDP socket
 	if ((s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
@@ -67,18 +74,25 @@ int main(void)
 		{
 			die("recvfrom()");
 		}
-		
+
+		buf[recv_len]='\0';
+
 		//print details of the client/peer and the data received
 		printf("Received packet from %s:%d\n", inet_ntoa(si_other.sin_addr), ntohs(si_other.sin_port));
 		printf("Data: %s\n" , buf);
 		
-		std::cout << "sendto1_start"<<std::endl;
+		//std::cout << "sendto1_start"<<std::endl;
 		//now reply the client with the same data
 		if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &si_other, slen) == -1)
 		{
 			die("sendto()");
 		}
-		std::cout << "sendto_ok"<<std::endl;
+		//std::cout << "tik: " << tik++ <<std::endl;
+		
+		for(int i = 0; i< BUFLEN;++i){
+			buf[i]=' ';
+		}
+		
 	}
 
 	//close(s);
